@@ -19,6 +19,7 @@ return [
 
     'allowed_origins' => [
         'http://localhost:5173', // React frontend (Vite)
+        'https://cloudtask-frontend.vercel.app', // Production React (Vercel)
         //'https://your-ngrok-url.ngrok-free.app', // (optional: ngrok dev tunnel)
         //'https://your-production-domain.com',    // (optional: production)
     ],

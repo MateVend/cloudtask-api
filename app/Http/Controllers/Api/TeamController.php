@@ -72,8 +72,8 @@ class TeamController extends Controller
 
             $organization->users()->attach($existingUser->id, ['role' => $validated['role']]);
 
-            Mail::to($newUser->email)->send(new TeamInvitation(
-                $newUser,
+            Mail::to($existingUser->email)->send(new TeamInvitation(
+                $existingUser,
                 $organization,
                 $request->user()
             ));
@@ -83,6 +83,7 @@ class TeamController extends Controller
                 'user' => $existingUser,
             ]);
         }
+
 
         $newUser = User::create([
             'name' => $validated['name'],
