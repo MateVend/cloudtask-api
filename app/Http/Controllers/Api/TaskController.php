@@ -71,13 +71,14 @@ class TaskController extends Controller
             Mail::to($task->assignedUser->email)->send(new TaskAssigned($task, $request->user()));
         }
 
+        // After task creation
         if ($task->assigned_to) {
             Notification::create([
                 'user_id' => $task->assigned_to,
                 'organization_id' => $task->organization_id,
                 'type' => 'task_assigned',
                 'message' => $request->user()->name . ' assigned you a task: ' . $task->title,
-                'data' => ['task_id' => $task->id],
+                'data' => json_encode(['task_id' => $task->id]),
             ]);
         }
 
@@ -170,13 +171,17 @@ class TaskController extends Controller
             ));
         }
 
+        // After comment creation
         if ($task->assigned_to && $task->assigned_to !== $request->user()->id) {
             Notification::create([
                 'user_id' => $task->assigned_to,
                 'organization_id' => $task->organization_id,
                 'type' => 'comment_added',
                 'message' => $request->user()->name . ' commented on: ' . $task->title,
-                'data' => ['task_id' => $task->id, 'comment_id' => $comment->id],
+                'data' => json_encode([
+                    'task_id' => $task->id,
+                    'comment_id' => $comment->id
+                ]),
             ]);
         }
 

@@ -9,6 +9,8 @@ use App\Http\Controllers\Api\TeamController;
 use App\Http\Controllers\Api\DashboardController;
 use App\Http\Controllers\Api\PaymentController;
 use App\Http\Controllers\Api\FileController;
+use App\Http\Controllers\Api\SearchController;
+use App\Http\Controllers\Api\NotificationController;
 
 // Public routes
 Route::post('/register', [AuthController::class, 'register']);
@@ -71,5 +73,14 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/attachments/{attachment}/download', [FileController::class, 'downloadTaskAttachment']);
     Route::post('/upload/logo', [FileController::class, 'uploadOrganizationLogo']);
     Route::post('/upload/avatar', [FileController::class, 'uploadUserAvatar']);
+
+    // Search
+    Route::get('/search', [SearchController::class, 'search']);
+
+    // Notifications
+    Route::get('/notifications', [NotificationController::class, 'index']);
+    Route::get('/notifications/unread-count', [NotificationController::class, 'getUnreadCount']);
+    Route::post('/notifications/{id}/read', [NotificationController::class, 'markAsRead']);
+    Route::post('/notifications/mark-all-read', [NotificationController::class, 'markAllAsRead']);
 
 });
