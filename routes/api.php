@@ -36,6 +36,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::delete('/organizations/{organization}', [OrganizationController::class, 'destroy']);
     Route::post('/organizations/{organization}/update-plan', [OrganizationController::class, 'updatePlan']);
     Route::get('/organizations/{organization}/usage', [OrganizationController::class, 'getUsage']);
+    Route::post('/organizations/{organization}/logo', [FileController::class, 'uploadOrganizationLogo']);
+
 
     // Projects
     Route::get('/projects', [ProjectController::class, 'index']);

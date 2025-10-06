@@ -60,31 +60,29 @@ class FileController extends Controller
         return Storage::disk('public')->download($attachment->path, $attachment->original_filename);
     }
 
-    public function uploadOrganizationLogo(Request $request)
+    public function uploadOrganizationLogo(Request $request, $organization)
     {
-        $organization = Organization::find($request->user()->current_organization_id);
+        $org = Organization::find($organization);
 
-        if (!$request->user()->isAdmin($organization->id)) {
+        if (!$org) {
+            return response()->json(['message' => 'Organization not found'], 404);
+        }
+
+        if (!$request->user()->isAdmin($org->id)) {
             return response()->json(['message' => 'Unauthorized'], 403);
         }
 
         $request->validate([
-            'logo' => 'required|image|mimes:jpeg,png,jpg,svg|max:2048',
+            'logo' => 'required|image|max:2048',
         ]);
-
-        if ($organization->logo) {
-            Storage::disk('public')->delete($organization->logo);
-        }
 
         $path = $request->file('logo')->store('logos', 'public');
+        $org->logo = $path;
+        $org->save();
 
-        $organization->update(['logo' => $path]);
-
-        return response()->json([
-            'logo' => Storage::url($path),
-            'organization' => $organization,
-        ]);
+        return response()->json(['message' => 'Logo uploaded successfully', 'path' => $path]);
     }
+
 
     public function uploadUserAvatar(Request $request)
     {
