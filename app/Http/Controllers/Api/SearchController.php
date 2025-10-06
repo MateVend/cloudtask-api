@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\Project;
 use App\Models\Task;
-use App\Models\User;
 use Illuminate\Http\Request;
 
 class SearchController extends Controller
@@ -32,7 +31,7 @@ class SearchController extends Controller
                 'type' => 'project',
                 'name' => $project->name,
                 'path' => '/projects/' . $project->id,
-                'meta' => ['color' => $project->color]
+                'meta' => ['color' => $project->color],
             ];
         }
 
@@ -50,24 +49,25 @@ class SearchController extends Controller
                 'path' => '/tasks',
                 'meta' => [
                     'project' => $task->project->name ?? 'Unknown',
-                    'status' => $task->status
-                ]
+                    'status' => $task->status,
+                ],
             ];
         }
 
-        // Search Team Members
+        // Search Team Members (FIXED)
         $organization = $request->user()->currentOrganization;
         $members = $organization->users()
-            ->where('name', 'like', "%{$query}%")
+            ->select('users.id', 'users.name', 'users.email')
+            ->where('users.name', 'like', "%{$query}%")
             ->limit(5)
-            ->get(['id', 'name', 'email']);
+            ->get();
 
         foreach ($members as $member) {
             $results[] = [
                 'type' => 'team',
                 'name' => $member->name,
                 'path' => '/team',
-                'meta' => ['email' => $member->email]
+                'meta' => ['email' => $member->email],
             ];
         }
 
