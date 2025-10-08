@@ -40,7 +40,9 @@ class OrganizationController extends Controller
     public function update(Request $request, Organization $organization)
     {
         if (!$request->user()->isAdmin($organization->id)) {
-            return response()->json(['message' => 'Unauthorized'], 403);
+            return response()->json([
+                'message' => 'You are not allowed to delete this organization. Only administrators can perform this action.'
+            ], 403);
         }
 
         $validated = $request->validate([
