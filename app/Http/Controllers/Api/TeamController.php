@@ -105,9 +105,6 @@ class TeamController extends Controller
         $user = $request->user();
         $organization = Organization::find($user->current_organization_id);
 
-        if (!$user->isAdmin($organization->id)) {
-            return response()->json(['message' => 'Unauthorized'], 403);
-        }
 
         $validated = $request->validate([
             'role' => 'required|in:admin,manager,member',
